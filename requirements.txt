@@ -1,0 +1,3 @@
+blaseball-game-summary
+configargparse
+rich

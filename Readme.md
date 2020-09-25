@@ -1,8 +1,9 @@
 # blaseball-game-gems
 
-`game-gems` is a command line tool that analyzes blaseball game summaries to
-look for notable or significant events. This tool uses the
-[`game-summary`](https://github.com/ch4zm/blaseball-game-summary)
+This repo contains code to analyze blaseball game summaries
+and look for notable or significant events.
+
+It uses the [`game-summary`](https://github.com/ch4zm/blaseball-game-summary)
 tool to get game summaries, and identifies significant or noteworthy
 events from the game summary.
 
@@ -30,27 +31,17 @@ A list of conditions that this tool looks for (not comprehensive):
     * near miss perfect game
     * 10 or more strikeouts
 
-## Quick Start
+## Instructions
 
-Start by installing blaseball
+Use the `game-gems` script to analyze the JSON output from the
+`game-summary` utility.
 
-```text
-pip install blaseball-game-gems
-```
-
-Now call game-gems and pass it a blaseball game ID:
+Call `game-gems` and pass it a JSON file containing a game summary
+output:
 
 ```text
-game-gems [game-id]
-```
-
-By default this tool will call the `game-summary` tool to generate
-a game summary on the fly. If you already created a JSON file
-with the game summary, you can pass it to the `game-gems`
-tool via the `--json-file` flag:
-
-```text
-game-gems [game-id] --json-file [input-json]
+./game-gems --input-file [input-json]
+./game-gems -i [input-json]
 ```
 
 This command outputs a JSON object with various indicators of
