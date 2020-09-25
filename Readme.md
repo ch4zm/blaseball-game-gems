@@ -1,7 +1,14 @@
 # blaseball-game-gems
 
-blaseball-game-gems is a command line tool that analyzes a blaseball game to
-look for notable or significant events. 
+`game-gems` is a command line tool that analyzes blaseball game summaries to
+look for notable or significant events. This tool uses the
+[`game-summary`](https://github.com/ch4zm/blaseball-game-summary)
+tool to get game summaries, and identifies significant or noteworthy
+events from the game summary.
+
+**Note:** This tool analyzes game summaries, not game events. The `game-summary` tool
+processes the actual blaseball events returned by the blaseball-reference.com API,
+this tool processes the output of the `game-summary` tool.
 
 A list of conditions that this tool looks for (not comprehensive):
 
@@ -37,7 +44,16 @@ Now call game-gems and pass it a blaseball game ID:
 game-gems [game-id]
 ```
 
-This outputs a JSON object with various indicators of
+By default this tool will call the `game-summary` tool to generate
+a game summary on the fly. If you already created a JSON file
+with the game summary, you can pass it to the `game-gems`
+tool via the `--json-file` flag:
+
+```text
+game-gems [game-id] --json-file [input-json]
+```
+
+This command outputs a JSON object with various indicators of
 significant blaseball events:
 
 ```text
@@ -53,6 +69,4 @@ significant blaseball events:
     }
 ]
 ```
-
-
 
