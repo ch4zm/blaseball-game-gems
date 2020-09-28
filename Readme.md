@@ -31,10 +31,13 @@ A list of conditions that this tool looks for (not comprehensive):
     * near miss perfect game
     * 10 or more strikeouts
 
-## Instructions
+## Quick Start
 
 Use the `game-gems` script to analyze the JSON output from the
 `game-summary` utility.
+
+This tool has a command line flag to specify the input file (`-i/--input-file`)
+and several flags to specify an output format (`--json`, `--text`, and `--markdown`).
 
 Start by creating a game summary using the `game-finder` and `game-summary`
 utilities. Here, we look up the perfect game by Patty Patterson of the Millennials,
