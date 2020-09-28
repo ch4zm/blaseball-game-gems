@@ -1,4 +1,5 @@
 import json
+from itertools import groupby
 
 """
 Should probably put together an analogous structure
@@ -47,6 +48,8 @@ class DataParser(object):
     PITCHING_LO_HIT = 4
     PITCHING_BB_LO = 1
     PITCHING_BB_HI = 8
+    PITCHING_HITLESS = 6
+    PITCHING_SCORELESS = 8
 
     def __init__(self, options):
         self.input_file = options.input_file
@@ -486,16 +489,37 @@ class DataParser(object):
         # Only the winning pitcher:
 
         def make_shutout_gem(player_name, team_name, versus_team_name, hits, strikeouts, walks):
+            if walks==0:
+                walks_text = "no walks"
+            elif walks==1:
+                walks_text = "just %d walk"%(walks)
+            else:
+                walks_text = "just %d walks"%(walks)
+
+            if strikeouts==0:
+                strikeouts_text = "no strikeouts"
+            elif strikeouts==1:
+                strikeouts_text = "%d strikeout"%(strikeouts)
+            else:
+                strikeouts_text = "%d strikeouts"%(strikeouts)
+
+            if hits==0:
+                hits_text = "no hits"
+            elif hits==1:
+                hits_text = "%d hit"%(hits)
+            else:
+                hits_text = "%d hits"%(hits)
+
             d = dict(
                 gem_type="pitching_shutout",
                 gem_class="pitching",
-                gem_description="%s (%s) pitched a shutout against the %s, recording %d hits, %d strikeouts, and %d walks."%(
+                gem_description="%s (%s) pitched a shutout against the %s, allowing %s and recording %s and %s."%(
                     player_name,
                     team_name,
                     versus_team_name,
-                    hits,
-                    strikeouts,
-                    walks,
+                    hits_text,
+                    strikeouts_text,
+                    walks_text,
                 ),
                 gem_team=team_name,
                 gem_player=player_name,
@@ -503,10 +527,24 @@ class DataParser(object):
             return d
 
         def make_nohitter_gem(player_name, team_name, versus_team_name, strikeouts, walks):
+            if walks==0:
+                walks_text = "no walks"
+            elif walks==1:
+                walks_text = "just %d walk"%(walks)
+            else:
+                walks_text = "just %d walks"%(walks)
+
+            if strikeouts==0:
+                strikeouts_text = "no strikeouts"
+            elif strikeouts==1:
+                strikeouts_text = "%d strikeout"%(strikeouts)
+            else:
+                strikeouts_text = "%d strikeouts"%(strikeouts)
+
             d = dict(
                 gem_type="pitching_nohitter",
                 gem_class="pitching",
-                gem_description="%s (%s) pitched a no-hitter against the %s, recording %d strikeouts and %d walks."%(
+                gem_description="%s (%s) pitched a no-hitter against the %s, recording %s and %s."%(
                     player_name,
                     team_name,
                     versus_team_name,
@@ -575,16 +613,30 @@ class DataParser(object):
 
         def make_lowhitter_gem(player_name, team_name, versus_team_name, hits, walks, strikeouts):
             """Low-hitters"""
+            if walks==0:
+                walks_text = "no walks"
+            elif walks==1:
+                walks_text = "just %d walk"%(walks)
+            else:
+                walks_text = "just %d walks"%(walks)
+
+            if strikeouts==0:
+                strikeouts_text = "no strikeouts"
+            elif strikeouts==1:
+                strikeouts_text = "%d strikeout"%(strikeouts)
+            else:
+                strikeouts_text = "%d strikeouts"%(strikeouts)
+
             d = dict(
                 gem_type="pitching_lowhitter",
                 gem_class="pitching",
-                gem_description="%s (%s) threw a %d-hitter against the %s, recording %d strikeouts and %d walks."%(
+                gem_description="%s (%s) threw a %d-hitter against the %s, recording %s and %s."%(
                     player_name,
                     team_name,
                     hits,
                     versus_team_name,
-                    strikeouts,
-                    walks,
+                    strikeouts_text,
+                    walks_text,
                 ),
                 gem_team=team_name,
                 gem_player=player_name,
@@ -593,14 +645,17 @@ class DataParser(object):
 
         def make_lobb_gem(player_name, team_name, versus_team_name, walks):
             """Low-walk games"""
-            if walks>0:
-                walks_text = "just %d"%(walks)
+            if walks==0:
+                walks_text = "no walks"
+            elif walks==1:
+                walks_text = "just %d walk"%(walks)
             else:
-                walks_text = "no"
+                walks_text = "just %d walks"%(walks)
+
             d = dict(
                 gem_type="pitching_lowbb",
                 gem_class="pitching",
-                gem_description="%s (%s) allowed %s walks against the %s."%(
+                gem_description="%s (%s) allowed %s against the %s."%(
                     player_name,
                     team_name,
                     walks_text,
@@ -685,6 +740,100 @@ class DataParser(object):
                     other_team,
                     walks,
                 ))
+
+        # Based on hit/run statistics:
+        def make_hitless_gem(player_name, team_name, versus_team_name, inning_start, inning_end):
+            """N consecutive hitless innings"""
+            length = inning_end - inning_start + 1
+            d = dict(
+                gem_type="pitching_hitless",
+                gem_class="pitching",
+                gem_description="%s (%s) held the %s hitless for %d innings (%d thru %d)."%(
+                    player_name,
+                    team_name,
+                    versus_team_name,
+                    length,
+                    inning_start,
+                    inning_end,
+                ),
+                gem_team=team_name,
+                gem_player=player_name,
+            )
+            return d
+
+        def make_scoreless_gem(player_name, team_name, versus_team_name, inning_start, inning_end):
+            """N consecutive scoreless innings"""
+            length = inning_end - inning_start + 1
+            d = dict(
+                gem_type="pitching_scoreless",
+                gem_class="pitching",
+                gem_description="%s (%s) held the %s scoreless for %d innings (%d thru %d)."%(
+                    player_name,
+                    team_name,
+                    versus_team_name,
+                    length,
+                    inning_start,
+                    inning_end,
+                ),
+                gem_team=team_name,
+                gem_player=player_name,
+            )
+            return d
+
+        for htat in ['home', 'away']:
+            them = 'home' if htat=='away' else 'away'
+            runs = game_line[htat]
+            hits = game_summary[htat]['batting']['H']
+
+            # Hitless/scoreless happend to us, so pick the other pitcher
+            if game_box[htat] > game_box[them]:
+                pitcher_name = game_pitching['LP']
+            else:
+                pitcher_name = game_pitching['WP']
+
+            team_name = game_info["%sTeamNickname"%(them)]  # them
+            versus_name = game_info["%sTeamNickname"%(htat)]  # us
+
+            # Hold on to your butts
+
+            # Hitless:
+            inning_counter0 = 0
+            for k, g in groupby(hits):
+                group = list(g)
+                if k==0:
+                    # This contains grouped consecutive scoreless innings
+                    if len(group) > self.PITCHING_HITLESS:
+                        # Rack it
+                        inning_start0 = inning_counter0
+                        inning_end0 = inning_counter0 + len(group) - 1
+                        gem_list.append(make_hitless_gem(
+                            pitcher_name,
+                            team_name,
+                            versus_name,
+                            inning_start0 + 1,
+                            inning_end0 + 1
+                        ))
+                inning_counter0 += len(group)
+
+            # Runless:
+            inning_counter0 = 0
+            for k, g in groupby(runs):
+                groups = list(g)
+                if k==0:
+                    # This contains grouped consecutive scoreless innings
+                    if len(group) > self.PITCHING_SCORELESS:
+                        # Rack it
+                        inning_start0 = inning_counter0
+                        inning_end0 = inning_counter0 + len(group) - 1
+                        gem_list.append(make_scoreless_gem(
+                            pitcher_name,
+                            team_name,
+                            versus_name,
+                            inning_start0 + 1,
+                            inning_end0 + 1
+                        ))
+                inning_counter0 += len(group)
+
 
         # -----------------------
         # Return the final result
