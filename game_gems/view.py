@@ -1,6 +1,6 @@
 import sys
 import json
-from parser import DataParser
+from .parser import DataParser
 
 
 class BaseView(object):

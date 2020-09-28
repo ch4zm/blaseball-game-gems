@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
 import sys
 import os
 import json
 import argparse
-from view import JsonView, TextView
+from .view import JsonView, TextView
+from .util import CaptureStdout
 
 
 def main(sysargs = sys.argv[1:]):
@@ -53,6 +53,18 @@ def main(sysargs = sys.argv[1:]):
     elif options.json:
         v = JsonView(options)
         v.show()
+
+
+# To call the Python API, pass a game summary
+# in JSON string format
+def game_gems(sysargs, json_game_summary):
+    import tempfile
+    with tempfile.NamedTemporaryFile() as tmp:
+        with open(tmp.name, 'w') as f:
+            f.write(json_game_summary)
+        with CaptureStdout() as so:
+            main(sysargs+["-i", f.name])
+    return str(so)
 
 
 if __name__ == '__main__':

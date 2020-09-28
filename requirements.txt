@@ -1,3 +1,4 @@
+blaseball-game-finder
 blaseball-game-summary
 configargparse
 rich
