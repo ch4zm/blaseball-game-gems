@@ -2,7 +2,7 @@ import sys
 import os
 import json
 import argparse
-from .view import JsonView, TextView
+from .view import JsonView, TextView, MarkdownView
 from .util import CaptureStdout
 
 
@@ -27,9 +27,13 @@ def main(sysargs = sys.argv[1:]):
                    action='store_true',
                    default=False,
                    help='Output in plain text format')
+    g.add_argument('--markdown',
+                   action='store_true',
+                   default=False,
+                   help='Output in markdown format')
     g.add_argument('--json',
                    action='store_true',
-                   default=True,
+                   default=False,
                    help='Output in JSON format')
 
     # Print help, if no arguments provided
@@ -47,8 +51,14 @@ def main(sysargs = sys.argv[1:]):
         print(_program, __version__)
         sys.exit(0)
 
+    if (not options.markdown) and (not options.text) and (not options.json):
+        options.json = True
+
     if options.text:
         v = TextView(options)
+        v.show()
+    elif options.markdown:
+        v = MarkdownView(options)
         v.show()
     elif options.json:
         v = JsonView(options)
