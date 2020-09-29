@@ -721,6 +721,8 @@ class DataParser(object):
                     pitcher_team,
                     other_team,
                     hits,
+                    walks,
+                    strikeouts,
                 ))
 
             # Low walk
