@@ -693,17 +693,19 @@ class DataParser(object):
             else:
                 pitcher_team = lt
                 other_team = wt
-            if game_info['homeTeamNickname']==wt:
-                tlab = 'home'
-            else:
-                tlab = 'away'
-            wlab = plab + "-BB"
+
+            walkslab = plab + "-BB"
             klab = plab + "-K"
             hbplab = plab + "-HBP"
-            walks = sum(game_pitching[wlab])
+            walks = sum(game_pitching[walkslab])
             strikeouts = sum(game_pitching[klab])
             hbp = sum(game_pitching[hbplab])
-            hits = sum(game_summary[tlab]['batting']['H'])
+
+            if game_info['homeTeamNickname']==pitcher_team:
+                their_label= 'away'
+            else:
+                their_label = 'home'
+            hits = sum(game_summary[their_label]['batting']['H'])
 
             # Strikeout
             if strikeouts >= self.PITCHING_SO:
