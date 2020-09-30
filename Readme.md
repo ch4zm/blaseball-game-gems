@@ -128,7 +128,7 @@ Use Python to open the file and read its contents into a string.
 If your JSON is a Python dictionary, use the `json.dumps()` function.
 
 ```
-from game_gems import game_gems
+from game_gems.command import game_gems
 
 with open("mils_s8_d61.json", "r") as f:
     game_summary = json.load(f)
