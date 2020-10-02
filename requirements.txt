@@ -1,4 +1,4 @@
-blaseball-game-finder
-blaseball-game-summary
+blaseball-game-finder>=0.2.0
+blaseball-game-summary>=0.7.0
 configargparse
 rich
