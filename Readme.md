@@ -16,7 +16,8 @@ this tool processes the output of the `game-summary` tool.
 To install, point pip to the Github repo directly:
 
 ```
-pip install git+https://github.com/ch4zm/blaseball-game-gems.git#egg=game_gems
+pip install git+https://github.com/ch4zm/blaseball-core-game-data.git#egg=blaseball_core_game_data
+pip install git+https://github.com/ch4zm/blaseball-game-gems.git#egg=blaseball_game_gems
 ```
 
 ## Details
