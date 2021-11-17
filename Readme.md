@@ -17,6 +17,7 @@ To install, point pip to the Github repo directly:
 
 ```
 pip install git+https://github.com/ch4zm/blaseball-core-game-data.git#egg=blaseball_core_game_data
+pip install git+https://github.com/ch4zm/blaseball-game-summary.git#egg=blaseball_game_summary
 pip install git+https://github.com/ch4zm/blaseball-game-gems.git#egg=blaseball_game_gems
 ```
 
