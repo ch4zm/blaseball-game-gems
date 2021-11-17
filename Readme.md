@@ -11,6 +11,16 @@ events from the game summary.
 processes the actual blaseball events returned by the blaseball-reference.com API,
 this tool processes the output of the `game-summary` tool.
 
+## Installing
+
+To install, point pip to the Github repo directly:
+
+```
+pip install git+https://github.com/ch4zm/blaseball-game-gems.git#egg=game_gems
+```
+
+## Details
+
 A list of conditions that this tool looks for (not comprehensive):
 
 * batting gems:
